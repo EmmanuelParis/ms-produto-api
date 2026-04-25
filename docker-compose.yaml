@@ -1,22 +1,32 @@
-services:
-  db:
-    image: postgres:18-alpine
-    container_name: db_produtos
+version: "3.9"
 
+services:
+
+  db_produto:
+    image: postgres:16-alpine
+    container_name: db_produto
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: produtos
-
     ports:
       - "5433:5432"
-
-    shm_size: 128mb
+    volumes:
+      - pgdata_produto:/var/lib/postgresql/data
     restart: always
 
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+  produto:
+    build: .
+    container_name: ms_produto
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db_produto
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_produto:5432/produtos
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    restart: always
 
 volumes:
-  pgdata:
-
+  pgdata_produto:

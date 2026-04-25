@@ -1,5 +1,7 @@
 package br.com.faculdadecatolicapb.ms_produto.services;
 
+import br.com.faculdadecatolicapb.ms_produto.client.PedidoClient;
+import br.com.faculdadecatolicapb.ms_produto.client.PedidoDTO;
 import br.com.faculdadecatolicapb.ms_produto.domain.Produto;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoRequestDTO;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoResponseDTO;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
+    private final PedidoClient pedidoClient;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO produtoRequestDTO){
         Produto produto = produtoMapper.toEntity(produtoRequestDTO);
@@ -38,12 +41,16 @@ public class ProdutoService {
         return produtos.stream().map(produtoMapper::toDTO).toList();
     }
 
-    public void apagar(Long id){
+    public void deletar(Long id){
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado."));
 
-        produtoRepository.delete(produto);
+        var pedidos = pedidoClient.buscarPedidosPorProduto(id);
 
+        if (!pedidos.isEmpty()) {
+            throw new RuntimeException("Produto não pode ser removido pois possui pedidos vinculados.");
+        }
+        produtoRepository.delete(produto);
     }
 
     public ProdutoResponseDTO editar(Long id, ProdutoRequestDTO produtoRequestDTO){
@@ -52,10 +59,26 @@ public class ProdutoService {
 
         produto.setNome(produtoRequestDTO.nome());
         produto.setValor(produtoRequestDTO.valor());
+        produto.setEstoque(produtoRequestDTO.estoque());
 
         produto = produtoRepository.save(produto);
 
         return produtoMapper.toDTO(produto);
+    }
 
+    public void reduzirEstoque(Long id, Integer quantidade) {
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+
+        if (produto.getEstoque() < quantidade) {
+            throw new RuntimeException("Estoque insuficiente");
+        }
+
+        produto.setEstoque(produto.getEstoque() - quantidade);
+        produtoRepository.save(produto);
+    }
+
+    public List<PedidoDTO> buscarPedidosDoProduto(Long id) {
+        return pedidoClient.buscarPedidosPorProduto(id);
     }
 }

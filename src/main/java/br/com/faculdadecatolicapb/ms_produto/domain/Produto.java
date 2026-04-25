@@ -23,4 +23,7 @@ public class Produto {
 
     @Column(nullable = false)
     private BigDecimal valor;
+
+    @Column(nullable = false)
+    private Integer estoque;
 }
