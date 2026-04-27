@@ -20,7 +20,7 @@ public class ProdutoService {
     private final ProdutoMapper produtoMapper;
     private final PedidoClient pedidoClient;
 
-    public ProdutoResponseDTO cadastrar(ProdutoRequestDTO produtoRequestDTO){
+    public ProdutoResponseDTO cadastrar(ProdutoRequestDTO produtoRequestDTO) {
         Produto produto = produtoMapper.toEntity(produtoRequestDTO);
 
         produto = produtoRepository.save(produto);
@@ -28,20 +28,20 @@ public class ProdutoService {
         return produtoMapper.toDTO(produto);
     }
 
-    public ProdutoResponseDTO buscarPorId(Long id){
+    public ProdutoResponseDTO buscarPorId(Long id) {
         Produto protudo = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado."));
 
         return produtoMapper.toDTO(protudo);
     }
 
-    public List<ProdutoResponseDTO> buscarTodos(){
+    public List<ProdutoResponseDTO> buscarTodos() {
         List<Produto> produtos = produtoRepository.findAll();
 
         return produtos.stream().map(produtoMapper::toDTO).toList();
     }
 
-    public void deletar(Long id){
+    public void deletar(Long id) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado."));
 
@@ -53,7 +53,7 @@ public class ProdutoService {
         produtoRepository.delete(produto);
     }
 
-    public ProdutoResponseDTO editar(Long id, ProdutoRequestDTO produtoRequestDTO){
+    public ProdutoResponseDTO editar(Long id, ProdutoRequestDTO produtoRequestDTO) {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado."));
 
@@ -76,9 +76,5 @@ public class ProdutoService {
 
         produto.setEstoque(produto.getEstoque() - quantidade);
         produtoRepository.save(produto);
-    }
-
-    public List<PedidoDTO> buscarPedidosDoProduto(Long id) {
-        return pedidoClient.buscarPedidosPorProduto(id);
     }
 }

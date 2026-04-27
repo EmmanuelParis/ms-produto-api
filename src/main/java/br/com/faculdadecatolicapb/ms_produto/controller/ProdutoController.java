@@ -43,11 +43,6 @@ public class ProdutoController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @GetMapping("/{id}/pedidos")
-    public ResponseEntity<List<PedidoDTO>> buscarPedidos(@PathVariable Long id) {
-        return ResponseEntity.ok(produtoService.buscarPedidosDoProduto(id));
-    }
-
     @PostMapping("/{id}/reduzir-estoque")
     public ResponseEntity<Void> reduzirEstoque(@PathVariable Long id, @RequestParam Integer quantidade) {
 
