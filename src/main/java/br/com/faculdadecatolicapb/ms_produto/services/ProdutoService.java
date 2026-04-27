@@ -1,7 +1,5 @@
 package br.com.faculdadecatolicapb.ms_produto.services;
 
-import br.com.faculdadecatolicapb.ms_produto.client.PedidoClient;
-import br.com.faculdadecatolicapb.ms_produto.client.PedidoDTO;
 import br.com.faculdadecatolicapb.ms_produto.domain.Produto;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoRequestDTO;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoResponseDTO;
@@ -18,7 +16,6 @@ import java.util.List;
 public class ProdutoService {
     private final ProdutoRepository produtoRepository;
     private final ProdutoMapper produtoMapper;
-    private final PedidoClient pedidoClient;
 
     public ProdutoResponseDTO cadastrar(ProdutoRequestDTO produtoRequestDTO) {
         Produto produto = produtoMapper.toEntity(produtoRequestDTO);
@@ -45,11 +42,6 @@ public class ProdutoService {
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("O produto não foi encontrado."));
 
-        var pedidos = pedidoClient.buscarPedidosPorProduto(id);
-
-        if (!pedidos.isEmpty()) {
-            throw new RuntimeException("Produto não pode ser removido pois possui pedidos vinculados.");
-        }
         produtoRepository.delete(produto);
     }
 

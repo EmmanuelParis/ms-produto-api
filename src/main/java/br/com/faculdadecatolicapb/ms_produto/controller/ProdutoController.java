@@ -1,6 +1,5 @@
 package br.com.faculdadecatolicapb.ms_produto.controller;
 
-import br.com.faculdadecatolicapb.ms_produto.client.PedidoDTO;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoRequestDTO;
 import br.com.faculdadecatolicapb.ms_produto.dto.ProdutoResponseDTO;
 import br.com.faculdadecatolicapb.ms_produto.services.ProdutoService;
