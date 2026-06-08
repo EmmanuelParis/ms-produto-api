@@ -10,7 +10,7 @@ public record ProdutoRequestDTO(
         @NotBlank(message = "O nome do produto é obrigatório")
         String nome,
 
-        @NotNull(message = "É preciso informar o nome do produto")
+        @NotNull(message = "É preciso informar o valor do produto")
         @Positive(message = "O valor deve ser maior que 0")
         BigDecimal valor,
 
